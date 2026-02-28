@@ -8,13 +8,18 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/timetable")
 public class TimetableController {
     private final TimetableService timetableService;
-    
+
     public TimetableController(TimetableService timetableService) {
         this.timetableService = timetableService;
     }
-    
+
     @GetMapping("/student/{studentId}")
-    public ResponseEntity<?> getStudentTimetable(@PathVariable Long studentId) {
+    public ResponseEntity<?> getStudentTimetable(@PathVariable("studentId") Long studentId) {
         return ResponseEntity.ok(timetableService.getStudentTimetable(studentId));
+    }
+
+    @GetMapping("/teacher/{teacherId}")
+    public ResponseEntity<?> getTeacherTimetable(@PathVariable("teacherId") Long teacherId) {
+        return ResponseEntity.ok(timetableService.getTeacherTimetable(teacherId));
     }
 }

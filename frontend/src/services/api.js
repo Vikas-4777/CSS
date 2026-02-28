@@ -19,7 +19,9 @@ api.interceptors.request.use(config => {
 
 export const authAPI = {
   login: (data) => api.post('/auth/login', data),
-  register: (data) => api.post('/auth/register', data)
+  register: (data) => api.post('/auth/register', data),
+  resetPassword: (data) => api.post('/auth/reset-password', data),
+  updateProfile: (userId, data) => api.put(`/auth/profile/${userId}`, data)
 };
 
 export const courseAPI = {
@@ -27,18 +29,22 @@ export const courseAPI = {
   getById: (id) => api.get(`/courses/${id}`),
   getByTeacher: (teacherId) => api.get(`/courses/teacher/${teacherId}`),
   create: (data) => api.post('/courses', data),
-  delete: (id) => api.delete(`/courses/${id}`)
+  delete: (id) => api.delete(`/courses/${id}`),
+  assign: (id, teacherId) => api.put(`/courses/${id}/assign`, { teacherId }),
+  approve: (id) => api.put(`/courses/${id}/approve`)
 };
 
 export const enrollmentAPI = {
   enroll: (data) => api.post('/enrollments', data),
   drop: (studentId, courseId) => api.delete(`/enrollments?studentId=${studentId}&courseId=${courseId}`),
   getByStudent: (studentId) => api.get(`/enrollments/student/${studentId}`),
-  getBySection: (sectionId) => api.get(`/enrollments/section/${sectionId}`)
+  getBySection: (sectionId) => api.get(`/enrollments/section/${sectionId}`),
+  getAll: () => api.get('/enrollments/all')
 };
 
 export const timetableAPI = {
-  getByStudent: (studentId) => api.get(`/timetable/student/${studentId}`)
+  getByStudent: (studentId) => api.get(`/timetable/student/${studentId}`),
+  getByTeacher: (teacherId) => api.get(`/timetable/teacher/${teacherId}`)
 };
 
 export const adminAPI = {

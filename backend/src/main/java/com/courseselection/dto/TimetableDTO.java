@@ -11,4 +11,5 @@ public class TimetableDTO {
     private String timeSlot;
     private Long courseId;
     private String courseName;
+    private String room;
 }

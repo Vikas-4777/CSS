@@ -26,4 +26,7 @@ public class Timetable {
     
     @Column(name = "time_slot", nullable = false)
     private String timeSlot;
+    
+    @Column(name = "room")
+    private String room;
 }

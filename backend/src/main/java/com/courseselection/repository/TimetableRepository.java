@@ -6,6 +6,12 @@ import java.util.List;
 
 public interface TimetableRepository extends JpaRepository<Timetable, Long> {
     List<Timetable> findByStudentId(Long studentId);
+
     boolean existsByStudentIdAndDayAndTimeSlot(Long studentId, String day, String timeSlot);
+
     void deleteByStudentIdAndCourseId(Long studentId, Long courseId);
+
+    void deleteByStudentId(Long studentId);
+
+    void deleteByCourseId(Long courseId);
 }

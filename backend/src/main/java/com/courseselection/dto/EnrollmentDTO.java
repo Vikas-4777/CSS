@@ -9,6 +9,7 @@ public class EnrollmentDTO {
     private Long id;
     private Long studentId;
     private String studentName;
+    private String studentEmail;
     private Long sectionId;
     private String sectionName;
     private Long courseId;

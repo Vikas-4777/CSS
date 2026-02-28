@@ -12,5 +12,6 @@ public class CourseDTO {
     private Integer credits;
     private Long teacherId;
     private String teacherName;
+    private String status;
     private List<SectionDTO> sections;
 }

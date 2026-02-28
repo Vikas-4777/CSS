@@ -9,18 +9,18 @@ import java.util.Map;
 @RequestMapping("/api/admin")
 public class AdminController {
     private final AdminService adminService;
-    
+
     public AdminController(AdminService adminService) {
         this.adminService = adminService;
     }
-    
+
     @GetMapping("/users")
     public ResponseEntity<?> getAllUsers() {
         return ResponseEntity.ok(adminService.getAllUsers());
     }
-    
+
     @PutMapping("/users/{userId}/toggle")
-    public ResponseEntity<?> toggleUserStatus(@PathVariable Long userId) {
+    public ResponseEntity<?> toggleUserStatus(@PathVariable("userId") Long userId) {
         try {
             adminService.toggleUserStatus(userId);
             return ResponseEntity.ok(Map.of("message", "User status updated"));
@@ -28,9 +28,9 @@ public class AdminController {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
-    
+
     @DeleteMapping("/users/{userId}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long userId) {
+    public ResponseEntity<?> deleteUser(@PathVariable("userId") Long userId) {
         try {
             adminService.deleteUser(userId);
             return ResponseEntity.ok(Map.of("message", "User deleted"));
@@ -38,7 +38,7 @@ public class AdminController {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
-    
+
     @GetMapping("/analytics")
     public ResponseEntity<?> getAnalytics() {
         return ResponseEntity.ok(adminService.getAnalytics());

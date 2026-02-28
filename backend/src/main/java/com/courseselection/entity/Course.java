@@ -24,6 +24,9 @@ public class Course {
     @JoinColumn(name = "teacher_id")
     private User teacher;
     
+    @Column(nullable = false)
+    private String status = "PENDING";
+    
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private List<Section> sections;
 }

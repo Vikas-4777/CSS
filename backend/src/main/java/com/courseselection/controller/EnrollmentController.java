@@ -9,22 +9,21 @@ import java.util.Map;
 @RequestMapping("/api/enrollments")
 public class EnrollmentController {
     private final EnrollmentService enrollmentService;
-    
+
     public EnrollmentController(EnrollmentService enrollmentService) {
         this.enrollmentService = enrollmentService;
     }
-    
+
     @PostMapping
     public ResponseEntity<?> enrollStudent(@RequestBody Map<String, Long> request) {
         try {
             return ResponseEntity.ok(enrollmentService.enrollStudent(
-                request.get("studentId"), request.get("sectionId")
-            ));
+                    request.get("studentId"), request.get("sectionId")));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
-    
+
     @DeleteMapping
     public ResponseEntity<?> dropCourse(@RequestParam Long studentId, @RequestParam Long courseId) {
         try {
@@ -34,14 +33,19 @@ public class EnrollmentController {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
-    
+
     @GetMapping("/student/{studentId}")
-    public ResponseEntity<?> getStudentEnrollments(@PathVariable Long studentId) {
+    public ResponseEntity<?> getStudentEnrollments(@PathVariable("studentId") Long studentId) {
         return ResponseEntity.ok(enrollmentService.getStudentEnrollments(studentId));
     }
-    
+
     @GetMapping("/section/{sectionId}")
-    public ResponseEntity<?> getSectionEnrollments(@PathVariable Long sectionId) {
+    public ResponseEntity<?> getSectionEnrollments(@PathVariable("sectionId") Long sectionId) {
         return ResponseEntity.ok(enrollmentService.getSectionEnrollments(sectionId));
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllEnrollments() {
+        return ResponseEntity.ok(enrollmentService.getAllEnrollments());
     }
 }

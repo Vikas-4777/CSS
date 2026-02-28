@@ -6,5 +6,8 @@ import java.util.List;
 
 public interface WaitlistRepository extends JpaRepository<Waitlist, Long> {
     List<Waitlist> findBySectionIdOrderByAddedAtAsc(Long sectionId);
+
     boolean existsByStudentIdAndSectionId(Long studentId, Long sectionId);
+
+    void deleteBySectionCourseId(Long courseId);
 }

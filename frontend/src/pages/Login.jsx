@@ -14,7 +14,7 @@ export default function Login() {
     try {
       const response = await authAPI.login({ email, password });
       setUser(response.data);
-      
+
       if (response.data.role === 'STUDENT') navigate('/student');
       else if (response.data.role === 'TEACHER') navigate('/teacher');
       else if (response.data.role === 'ADMIN') navigate('/admin');
@@ -25,22 +25,43 @@ export default function Login() {
 
   return (
     <div className="auth-container">
-      <div className="auth-box">
-        <h2>Course Selection System</h2>
-        {error && <div className="alert alert-error">{error}</div>}
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label>Email</label>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+      <div className="auth-card">
+        <div className="auth-left">
+          <div className="auth-left-content">
+            <div className="icon-badge animated-icons">
+              <span className="book-icon">📖</span>
+              <span className="pen-icon">✍️</span>
+            </div>
+            <h1 className="course-heading">Course<br />Registering<br />System</h1>
+            <p>Smart course registration<br />& timetable management system</p>
           </div>
-          <div className="form-group">
-            <label>Password</label>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <div className="light-streaks"></div>
+          <div className="particles"></div>
+        </div>
+        <div className="auth-right">
+          <div className="auth-box">
+            {error && <div className="alert alert-error">{error}</div>}
+            <form onSubmit={handleSubmit}>
+              <div className="form-group icon-input">
+                <span className="input-icon">👤</span>
+                <input type="email" placeholder="Email Address" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              </div>
+              <div className="form-group icon-input">
+                <span className="input-icon">🔒</span>
+                <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              </div>
+              <button type="submit" className="btn btn-primary">Login</button>
+            </form>
+            <div className="auth-footer">
+              <div className="auth-links-row">
+                <a href="/forgot-password">Forgot password?</a>
+                <a href="/support">Support {'>'}</a>
+              </div>
+              <div className="auth-link">
+                <a href="/register">Register new user?</a>
+              </div>
+            </div>
           </div>
-          <button type="submit" className="btn btn-primary">Login</button>
-        </form>
-        <div className="auth-link">
-          Don't have an account? <a href="/register">Register</a>
         </div>
       </div>
     </div>
