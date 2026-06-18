@@ -1,4 +1,4 @@
-# Masterpiece Course Registration Platform
+#Course Registration Platform
 
 A full-stack web application for managing student course enrollments with automatic timetable generation, role-based access control, real-time seat availability tracking, and a robust waitlist system.
 
