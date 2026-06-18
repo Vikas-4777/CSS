@@ -1,6 +1,5 @@
 package com.courseselection.controller;
 
-import com.courseselection.dto.CourseDTO;
 import com.courseselection.service.CourseService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

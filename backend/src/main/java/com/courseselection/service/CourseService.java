@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@SuppressWarnings("null")
 public class CourseService {
     private final CourseRepository courseRepository;
     private final SectionRepository sectionRepository;

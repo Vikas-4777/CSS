@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@SuppressWarnings("null")
 public class EnrollmentService {
     private final EnrollmentRepository enrollmentRepository;
     private final SectionRepository sectionRepository;
@@ -35,14 +36,13 @@ public class EnrollmentService {
             throw new RuntimeException("Already enrolled in this course");
         }
 
-        // Check for schedule conflict
-        int newCoursePattern = (int) (section.getCourse().getId() % 8);
+        int newCoursePattern = (int) (section.getId() % 8);
         List<Enrollment> currentEnrollments = enrollmentRepository.findByStudentId(studentId);
         for (Enrollment e : currentEnrollments) {
-            int existingPattern = (int) (e.getSection().getCourse().getId() % 8);
+            int existingPattern = (int) (e.getSection().getId() % 8);
             if (newCoursePattern == existingPattern) {
                 throw new RuntimeException("Schedule conflict: Overlaps with enrolled course ["
-                        + e.getSection().getCourse().getName() + "]");
+                        + e.getSection().getCourse().getName() + " - Section " + e.getSection().getSectionName() + "]");
             }
         }
 

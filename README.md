@@ -1,230 +1,207 @@
-# Course Selection System
+# 🎓 Course Selection System (CSS)
 
-A full-stack web application for managing student course enrollments with automatic timetable generation.
+A premium, full-stack web application designed to streamline student course enrollments, automate conflict-free weekly timetable generation, and provide robust administrative oversight. Built with a modern, decoupled architecture using **Spring Boot 3.2** on the backend and **React 18 (Vite)** on the frontend.
 
-## Tech Stack
+---
 
-- **Frontend**: React 18 + Vite
-- **Backend**: Spring Boot 3.2 (Java 17)
-- **Database**: MySQL 8
-- **Authentication**: JWT
+## 🏗️ System Architecture & Data Flow
 
-## Features
+```
+   ┌─────────────────────────────────────────────────────────┐
+   │                       React UI                          │
+   │  (Dashboards, Course Catalog, Timetable Grid, Analytics) │
+   └────────────────────────────┬────────────────────────────┘
+                                │ (Axios / JWT Auth)
+                                ▼
+   ┌─────────────────────────────────────────────────────────┐
+   │                 REST Controller Layer                   │
+   │       (Auth, Course, Enrollment, Timetable, Admin)      │
+   └────────────────────────────┬────────────────────────────┘
+                                ▼
+   ┌─────────────────────────────────────────────────────────┐
+   │                     Service Layer                       │
+   │        (Business Logic, Timetable Gen, Waitlist)        │
+   └────────────────────────────┬────────────────────────────┘
+                                ▼
+   ┌─────────────────────────────────────────────────────────┐
+   │                  Data Access (JPA)                      │
+   │     (UserRepository, CourseRepository, SectionRep)      │
+   └────────────────────────────┬────────────────────────────┘
+                                ▼
+   ┌─────────────────────────────────────────────────────────┐
+   │                     MySQL Database                      │
+   │       (Persistent Storage, Foreign Key Constraints)      │
+   └─────────────────────────────────────────────────────────┘
+```
 
-### Student Module
-- Register and login
-- Browse all available courses
-- View 4 sections (A, B, C, D) per course with capacity tracking (50 students max)
-- Enroll in one section per course
-- Automatic timetable generation (9 AM - 5 PM)
-- View weekly timetable grid
-- Export timetable as PDF
-- Drop courses
-- Real-time seat availability
-- Waitlist system when sections are full
+---
 
-### Teacher Module
-- Login system
-- Add new courses (automatically creates 4 sections)
-- View all courses taught
-- View students enrolled in each section
-- Track section capacity (e.g., 32/50)
-- Delete courses
+## 🛠️ Technology Stack
 
-### Admin Module
-- View system analytics (total students, teachers, courses, enrollments)
-- Manage all users (students, teachers, admins)
-- Activate/deactivate user accounts
-- Delete users
-- View all courses in the system
+### Backend
+* **Spring Boot 3.2** (Java 17) — Enterprise-grade REST APIs.
+* **Spring Security & JJWT** — Secure authentication and Role-Based Access Control (RBAC).
+* **Spring Data JPA & Hibernate** — Object-Relational Mapping (ORM) and transaction management.
+* **HikariCP** — Fast, reliable database connection pooling.
+* **Lombok** — Boilerplate reduction.
+* **Maven** — Dependency and build management.
 
-## Prerequisites
+### Frontend
+* **React 18** + **Vite** — High-performance single-page application (SPA).
+* **React Router Dom** — Client-side navigation & route protection.
+* **Axios** — Promised-based HTTP client with interceptors for JWT token attachment.
+* **jsPDF** — Dynamic client-side weekly timetable PDF generation.
+* **Vanilla CSS** — Premium, customized UI design with responsive layouts and hover animations.
 
-- Java 17 or higher
-- Maven 3.6+
-- MySQL 8.0+
-- Node.js 18+ and npm
+### Database
+* **MySQL 8.0** — Relational database management.
 
-## Database Setup
+---
 
-1. Install MySQL and start the service
+## 🌟 Core Modules & Features
 
-2. Create database and tables:
+### 👨‍🎓 Student Module
+* **Interactive Dashboard**: View enrollment status and overall progress.
+* **Smart Catalog**: Browse courses, search by name, filter by availability, and view section capacities.
+* **Dynamic Enrollment**: Enroll in sections (A, B, C, D) with automatic double-enrollment and schedule conflict prevention.
+* **Timetable Grid**: A beautiful interactive calendar displaying weekly class schedules.
+* **PDF Export**: Single-click PDF download of the personalized weekly timetable.
+* **Waitlist Queue**: Auto-joins waitlists for fully enrolled sections (capacity: 50).
+* **Drop Mechanism**: Drop courses, automatically promoting the next student on the waitlist.
+
+### 👩‍🏫 Teacher Module
+* **Course Creation**: Launch new courses (automatically generates sections A, B, C, D with 50-student capacity limits).
+* **Section Rosters**: View all sections taught and check real-time enrollment lists.
+* **Capacity Tracking**: Monitor class fill rates (e.g., `35/50` enrolled).
+* **Course Deletion**: Drop courses, cleaning up student timetables and waitlists concurrently.
+
+### 👑 Admin Module
+* **Executive Analytics**: Global dashboard tracking total students, teachers, courses, and active enrollments.
+* **User Management**: Add, view, activate/deactivate, or delete user accounts (Students, Teachers, Admins).
+* **Global Monitoring**: Oversee all courses, timetables, and system status in real-time.
+
+---
+
+## 🧠 Smart Systems
+
+### 1. Automatic Timetable Generation Algorithm
+When a student enrolls in a course, the system automatically allocates class times without conflicts:
+* **Time slots**: 9:00 AM - 5:00 PM split into 4 sessions (with breaks):
+  * Session 1: `09:00 - 10:30`
+  * Session 2: `10:45 - 12:15`
+  * Session 3: `13:15 - 14:45`
+  * Session 4: `15:00 - 16:30`
+* **Distribution**: Distributes courses across weekdays (Monday-Friday) utilizing a pattern-matching algorithm based on Course ID (`courseId % 8`).
+* **Conflict Guard**: Detects schedule overlaps and blocks enrollments if a time slot is already booked.
+
+### 2. Waitlist System (FIFO)
+* If a section is full (50/50), enrollment requests are automatically queued into the **Waitlist** in a First-In, First-Out order.
+* When a student drops a course, the system triggers transactional processing to automatically enroll the first waitlisted student and clear their waitlist entry.
+
+---
+
+## 🗄️ Database Relationships
+
+```
+    ┌───────────┐          ┌────────────┐          ┌─────────────┐
+    │   User    │1        N│   Course   │1        N│   Section   │
+    │ (Student, ├─────────>│  (Created  ├─────────>│ (A, B, C, D │
+    │  Teacher, │          │ by Teacher)│          │ Max Cap 50) │
+    │  Admin)   │          └────────────┘          └──────┬──────┘
+    └─────┬─────┘                                         │
+          │1                                              │1
+          ├─────────────────< Enrollment >────────────────┘
+          │                   (N to N)
+          ├───────< Timetable (Generated schedule slots)
+          │
+          └───────< Waitlist (Queue when sections are full)
+```
+
+---
+
+## 🚀 Installation & Running Guide
+
+### Prerequisites
+* **Java 17** (JDK 17)
+* **Node.js 18+** & **npm**
+* **MySQL 8.0+**
+* **Maven 3.6+**
+
+### 1. Database Setup
+Create the MySQL database and run the schema script:
 ```bash
-mysql -u root -p < backend/schema.sql
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS course_selection;"
+mysql -u root -p course_selection < backend/schema.sql
+mysql -u root -p course_selection < backend/sample-data.sql
+```
+*Note: Update database credentials in [application.properties](file:///Users/s.p.vikas/Documents/VS%20Code/course-project/backend/src/main/resources/application.properties) if necessary.*
+
+### 2. Launching Services
+You can run the application using the startup script at the root directory:
+```bash
+chmod +x start.sh
+./start.sh
 ```
 
-3. Update database credentials in `backend/src/main/resources/application.properties`:
-```properties
-spring.datasource.username=root
-spring.datasource.password=your_password
-```
+Alternatively, launch the services manually:
 
-## Backend Setup
-
-1. Navigate to backend directory:
+**Backend Setup:**
 ```bash
 cd backend
-```
-
-2. Build the project:
-```bash
 mvn clean install
-```
-
-3. Run the application:
-```bash
 mvn spring-boot:run
 ```
+*Port: `http://localhost:8080`*
 
-Backend will start on `http://localhost:8080`
-
-## Frontend Setup
-
-1. Navigate to frontend directory:
+**Frontend Setup:**
 ```bash
 cd frontend
-```
-
-2. Install dependencies:
-```bash
 npm install
-```
-
-3. Start development server:
-```bash
 npm run dev
 ```
+*Port: `http://localhost:5173`*
 
-Frontend will start on `http://localhost:5173`
+---
 
-## Default Test Accounts
+## 🔑 Test Credentials
+All test passwords are: `password123`
 
-After running the schema.sql, you can use these accounts (password: "password"):
+| Role | Email | Purpose |
+|---|---|---|
+| **Admin** | `admin@test.com` | Access system-wide dashboard & control users |
+| **Teacher** | `john.smith@test.com` | Create courses, view sections & student roster |
+| **Student** | `alice@test.com` | Enroll in courses, generate & download timetable |
+| **Student** | `bob@test.com` | Enroll in courses, test timetable slots |
 
-- **Admin**: admin@test.com
-- **Teacher**: teacher@test.com
-- **Student**: student@test.com
+---
 
-Note: The passwords in schema.sql are bcrypt hashed. You'll need to register new accounts or update the hashes.
-
-## API Endpoints
-
-### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - Login
-
-### Courses
-- `GET /api/courses` - Get all courses
-- `GET /api/courses/{id}` - Get course by ID
-- `GET /api/courses/teacher/{teacherId}` - Get courses by teacher
-- `POST /api/courses` - Create course (creates 4 sections automatically)
-- `DELETE /api/courses/{id}` - Delete course
-
-### Enrollments
-- `POST /api/enrollments` - Enroll student
-- `DELETE /api/enrollments` - Drop course
-- `GET /api/enrollments/student/{studentId}` - Get student enrollments
-- `GET /api/enrollments/section/{sectionId}` - Get section enrollments
-
-### Timetable
-- `GET /api/timetable/student/{studentId}` - Get student timetable
-
-### Admin
-- `GET /api/admin/users` - Get all users
-- `PUT /api/admin/users/{userId}/toggle` - Toggle user active status
-- `DELETE /api/admin/users/{userId}` - Delete user
-- `GET /api/admin/analytics` - Get system analytics
-
-## Project Structure
+## 📁 Project Structure
 
 ```
 course-project/
-├── backend/
-│   ├── src/main/java/com/courseselection/
-│   │   ├── config/          # Security configuration
-│   │   ├── controller/      # REST controllers
-│   │   ├── dto/             # Data transfer objects
-│   │   ├── entity/          # JPA entities
-│   │   ├── repository/      # Data repositories
-│   │   ├── security/        # JWT utilities
-│   │   └── service/         # Business logic
-│   ├── src/main/resources/
-│   │   └── application.properties
-│   ├── pom.xml
-│   └── schema.sql
-└── frontend/
+├── backend/                       # Spring Boot Backend
+│   ├── src/main/java/.../
+│   │   ├── config/                # Security Configurations (CORS, BCrypt, Filter Chain)
+│   │   ├── controller/            # REST API Endpoints
+│   │   ├── dto/                   # Request/Response Data Transfer Objects
+│   │   ├── entity/                # JPA Database Entities
+│   │   ├── repository/            # Spring Data JPA Repositories
+│   │   ├── security/              # JWT Filtering & Utility classes
+│   │   └── service/               # Core business logic implementation
+│   ├── pom.xml                    # Maven dependencies
+│   └── schema.sql                 # Database table structures
+└── frontend/                      # React Frontend
     ├── src/
-    │   ├── components/      # Reusable components
-    │   ├── pages/           # Page components
-    │   ├── services/        # API services
-    │   ├── utils/           # Utility functions
-    │   ├── App.jsx
-    │   ├── App.css
-    │   └── main.jsx
+    │   ├── components/            # Reusable UI widgets (Sidebar, etc.)
+    │   ├── pages/                 # Full-page application screens (Dashboards, Login/Register)
+    │   ├── services/              # API HTTP client integrations (Axios)
+    │   └── utils/                 # Local Storage & Authentication utilities
     ├── index.html
-    ├── package.json
-    └── vite.config.js
+    └── vite.config.js             # Vite configuration
 ```
 
-## Key Features Implementation
+---
 
-### Automatic Timetable Generation
-- Time slots: 09:00-10:30, 10:45-12:15, 13:15-14:45, 15:00-16:30
-- Includes breaks between sessions
-- Prevents time conflicts
-- Distributes courses across weekdays
+## 📄 License
 
-### Enrollment Constraints
-- Students cannot enroll in the same course twice
-- Section capacity limited to 50 students
-- Automatic waitlist when section is full
-- Real-time capacity updates
-
-### Waitlist System
-- Automatically adds students to waitlist when section is full
-- FIFO processing when spots become available
-- Automatic enrollment from waitlist when student drops
-
-### Search and Filter
-- Search courses by name
-- Real-time filtering
-- Sort by availability
-
-## Building for Production
-
-### Backend
-```bash
-cd backend
-mvn clean package
-java -jar target/course-selection-system-1.0.0.jar
-```
-
-### Frontend
-```bash
-cd frontend
-npm run build
-```
-
-Deploy the `dist` folder to your web server.
-
-## Troubleshooting
-
-### Backend won't start
-- Check MySQL is running
-- Verify database credentials
-- Ensure port 8080 is available
-
-### Frontend can't connect to backend
-- Verify backend is running on port 8080
-- Check CORS configuration in SecurityConfig.java
-- Update API_URL in frontend/src/services/api.js if needed
-
-### Database errors
-- Run schema.sql to create tables
-- Check Hibernate ddl-auto setting
-- Verify MySQL version compatibility
-
-## License
-
-MIT License
+This project is licensed under the MIT License.

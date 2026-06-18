@@ -455,54 +455,6 @@ export default function StudentDashboard() {
                 </div>
               </div>
             </div>
-
-            {/* Degree Journey Tracker */}
-            <div style={{
-              background: 'var(--input-bg)',
-              borderRadius: '12px',
-              padding: '20px',
-              marginBottom: '30px',
-              border: '1px solid var(--border-color)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '20px'
-            }}>
-              <div style={{
-                width: '80px',
-                height: '80px',
-                borderRadius: '50%',
-                background: `conic-gradient(var(--primary) ${Math.min(100, Math.round((totalCredits / 120) * 100))}%, var(--table-hover) 0)`,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                position: 'relative'
-              }}>
-                <div style={{
-                  width: '64px',
-                  height: '64px',
-                  backgroundColor: 'var(--input-bg)',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexDirection: 'column'
-                }}>
-                  <span style={{ fontSize: '16px', fontWeight: 'bold', color: 'var(--text-color)' }}>
-                    {Math.min(100, Math.round((totalCredits / 120) * 100))}%
-                  </span>
-                </div>
-              </div>
-              <div>
-                <h3 style={{ margin: '0 0 5px 0', fontSize: '16px' }}>Degree Journey Target</h3>
-                <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-muted)' }}>
-                  You have enrolled in <strong>{totalCredits}</strong> out of the <strong>120</strong> credits required for graduation.
-                </p>
-                <div style={{ marginTop: '10px', fontSize: '12px', color: 'var(--primary)', fontWeight: 'bold' }}>
-                  {120 - totalCredits > 0 ? `${120 - totalCredits} Credits Remaining` : 'Graduation Requirements Met! 🎉'}
-                </div>
-              </div>
-            </div>
-
             <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>

@@ -3,13 +3,13 @@ package com.courseselection.service;
 import com.courseselection.entity.User;
 import com.courseselection.entity.Course;
 import com.courseselection.entity.Enrollment;
-import com.courseselection.entity.Section;
 import com.courseselection.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 @Service
+@SuppressWarnings("null")
 public class AdminService {
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;

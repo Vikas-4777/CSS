@@ -26,34 +26,36 @@ public class TimetableService {
 
     public List<TimetableDTO> getStudentTimetable(Long studentId) {
         List<Enrollment> enrollments = enrollmentRepository.findByStudentId(studentId);
-        List<Course> courses = enrollments.stream().map(e -> e.getSection().getCourse()).distinct()
+        List<com.courseselection.entity.Section> sections = enrollments.stream().map(Enrollment::getSection)
                 .collect(Collectors.toList());
-        return generateTimetableForCourses(courses);
+        return generateTimetableForSections(sections);
     }
 
     public List<TimetableDTO> getTeacherTimetable(Long teacherId) {
         List<Course> courses = courseRepository.findByTeacherId(teacherId);
-        return generateTimetableForCourses(courses);
+        List<com.courseselection.entity.Section> sections = courses.stream().flatMap(c -> c.getSections().stream()).collect(Collectors.toList());
+        return generateTimetableForSections(sections);
     }
 
-    private List<TimetableDTO> generateTimetableForCourses(List<Course> courses) {
+    private List<TimetableDTO> generateTimetableForSections(List<com.courseselection.entity.Section> sections) {
         List<TimetableDTO> timetable = new ArrayList<>();
-        int n = courses.size();
+        int n = sections.size();
         if (n == 0)
             return timetable;
 
-        for (Course course : courses) {
-            char block = (char) ('A' + (course.getId() % 5));
-            String room = block + String.format("%03d", (course.getId() * 101) % 400 + 101);
-            int basePattern = (int) (course.getId() % CLASS_PERIODS.length);
+        for (com.courseselection.entity.Section section : sections) {
+            Course course = section.getCourse();
+            char block = (char) ('A' + (section.getId() % 5));
+            String room = block + String.format("%03d", (section.getId() * 101) % 400 + 101);
+            int basePattern = (int) (section.getId() % CLASS_PERIODS.length);
 
             for (int d = 0; d < 6; d++) {
                 int p_idx = (basePattern + d) % CLASS_PERIODS.length;
 
                 TimetableDTO dto = new TimetableDTO();
-                dto.setId(course.getId() * 1000 + d);
+                dto.setId(section.getId() * 1000 + d);
                 dto.setCourseId(course.getId());
-                dto.setCourseName(course.getName());
+                dto.setCourseName(course.getName() + " [" + section.getSectionName() + "]");
                 dto.setDay(DAYS[d]);
                 dto.setTimeSlot(String.valueOf(CLASS_PERIODS[p_idx]));
                 dto.setRoom(room);
